@@ -1,0 +1,22 @@
+{
+  "name": "socv",
+  "version": "1.0.0",
+  "description": "simple broker-ish server for the 'soc' websocket client.",
+  "main": "main.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0zl/socv.git"
+  },
+  "author": "0zl",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/0zl/socv/issues"
+  },
+  "homepage": "https://github.com/0zl/socv#readme",
+  "dependencies": {
+    "ws": "^8.6.0"
+  }
+}
