@@ -41,11 +41,11 @@
 
                 // custom packet types implementation
                 case 3: // send to server
-                    return send(2, packet)
-                case 4: // send to client
                     return send(3, packet)
-                case 5: // send to all
+                case 4: // send to client
                     return send(4, packet)
+                case 5: // send to all
+                    return send(5, packet)
             }
         })
     })
