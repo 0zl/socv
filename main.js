@@ -35,14 +35,16 @@
                 case 0:
                     return console.log(...payload[1])
                 case 1:
+                    return console.error(...payload[1])
+                case 2:
                     return console.log('broker:', `${payload[1]} successfully connected`)
-                
+
                 // custom packet types implementation
-                case 2: // send to server
+                case 3: // send to server
                     return send(2, packet)
-                case 3: // send to client
+                case 4: // send to client
                     return send(3, packet)
-                case 4: // send to all
+                case 5: // send to all
                     return send(4, packet)
             }
         })
