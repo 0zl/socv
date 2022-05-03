@@ -20,9 +20,10 @@
 
     const send = (type, data) => {
         SocketServer.clients.forEach(client => {
-            if ( client.readyState === client.OPEN ) {
-                client.send(bufferJson.encode([ type, data ]))
-            }
+            if ( client.readyState !== client.OPEN ) return
+            if ( !client.subscribeTypes.includes(type) ) return
+
+            client.send(bufferJson.encode([ type, data ]))
         })
     }
 
@@ -30,7 +31,9 @@
 
     SocketServer.on('connection', ws => {
         ws.setMaxListeners(0)
-        ws.clientName = null
+        
+        ws.clientName = 'unnamed client'
+        ws.subscribeTypes = []
 
         ws.on('message', raw => {
             let packet = bufferJson.decode(raw)
@@ -42,8 +45,9 @@
                 case 1:
                     return console.error(...packet[1])
                 case 2:
-                    ws.clientName = packet[1]
-                    return console.log('broker:', `${packet[1]} successfully connected`)
+                    ws.clientName = packet[1][0]
+                    ws.subscribeTypes = packet[1][1]
+                    return console.log('broker:', `${ws.clientName} successfully connected with types:`, ws.subscribeTypes.join(', '))
 
                 // custom packet types implementation
                 case 3: // send to server
@@ -56,18 +60,14 @@
         })
 
         ws.on('close', () => {
-            if ( ws.clientName ) {
-                console.log('broker:', `${ws.clientName} disconnected`)
-            } else {
-                console.log('broker:', 'unnamed client disconnected')
-            }
+            console.log('broker:', `${ws.clientName} disconnected`)
 
             ws.removeAllListeners()
             ws.terminate()
         })
 
         ws.on('error', err => {
-            console.error(ws.clientName || 'unnamed client', 'error:', err)
+            console.error(ws.clientName, 'error:', err)
         })
     })
 
